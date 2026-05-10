@@ -5,6 +5,12 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbwW56AajbBpeTAHLw_e6GPf
 let dadosPlanilha = {};
 let chartAtividade, chartPizza, chartEngajamento, chartStories;
 
+function urlFoto(url) {
+    if (!url) return '';
+    const id = (url.match(/[?&]id=([^&]+)/) || [])[1];
+    return id ? 'https://drive.google.com/thumbnail?id=' + id + '&sz=w100' : url;
+}
+
 // ─── Init ────────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
     carregarDados();
@@ -131,7 +137,7 @@ function criarCard({ nome, diasSemPostar, postsSemana, status, row }) {
     const inicial = nome.charAt(0).toUpperCase();
     const csKey   = `cs_${nome}`;
     const csChecked = localStorage.getItem(csKey) === 'true';
-    const fotoUrl = row && row['fotos'] ? row['fotos'] : '';
+    const fotoUrl = urlFoto(row && row['fotos'] ? row['fotos'] : '');
 
     const diasLabel = diasSemPostar === 999 ? 'sem dados' : `${diasSemPostar} dias`;
     const diasClass = status === 'critico' ? 'value-danger' : status === 'alerta' ? 'value-warning' : 'value-success';
@@ -268,7 +274,7 @@ function filtrarDados(nome) {
 
 function atualizarPerfil(nome, dados) {
     const inicial  = nome.charAt(0).toUpperCase();
-    const fotoUrl  = dados[dados.length - 1]?.['fotos'] || '';
+    const fotoUrl  = urlFoto(dados[dados.length - 1]?.['fotos'] || '');
     const avatarEl = document.getElementById('ind-avatar');
     if (fotoUrl) {
         avatarEl.innerHTML = `<img src="${fotoUrl}" class="avatar-img" alt="${inicial}" onerror="this.outerHTML='${inicial}'">`;
