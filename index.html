@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>V1 Club Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
+</head>
+<body>
+    <div class="container">
+
+        <header class="header">
+            <div class="profile-section">
+                <div class="avatar">
+                    <div class="avatar-icon">📊</div>
+                </div>
+                <div class="profile-info">
+                    <h1 class="username" id="username">Selecione um nutricionista</h1>
+                    <div class="stats">
+                        <div class="stat">
+                            <span class="stat-value" id="stat-posts">0</span>
+                            <span class="stat-label">Posts</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-value" id="stat-reels">0</span>
+                            <span class="stat-label">Reels</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-value" id="stat-stories">0</span>
+                            <span class="stat-label">Stories</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="filters">
+                <div class="filter-group">
+                    <input type="text" id="nutricionista" placeholder="Buscar nutricionista..." class="input-search" autocomplete="off">
+                    <div id="nutricionista-list" class="nutricionista-list" style="display:none;"></div>
+                </div>
+                <div class="filter-group">
+                    <select id="periodo" class="select-periodo">
+                        <option value="2">Últimas 2 semanas</option>
+                        <option value="4">Últimas 4 semanas</option>
+                        <option value="8">Últimas 8 semanas</option>
+                        <option value="custom">Personalizado</option>
+                    </select>
+                </div>
+                <div id="custom-dates" class="filter-group custom-dates" style="display:none;">
+                    <input type="date" id="data-inicio">
+                    <input type="date" id="data-fim">
+                    <button id="aplicar-custom" class="btn-apply">Aplicar</button>
+                </div>
+            </div>
+        </header>
+
+        <div class="activity-info">
+            <p id="info-dias" class="info-text">Selecione um nutricionista para ver os dados</p>
+        </div>
+
+        <div id="loading" class="loading"><p>Carregando dados...</p></div>
+        <div id="error" class="error" style="display:none;"></div>
+
+        <div class="charts-grid" id="charts-grid" style="display:none;">
+
+            <div class="chart-item">
+                <h3>Atividade por Semana</h3>
+                <canvas id="linha-atividade"></canvas>
+            </div>
+
+            <div class="chart-item">
+                <h3>Distribuição de Conteúdo</h3>
+                <canvas id="pizza-conteudo"></canvas>
+            </div>
+
+            <div class="chart-item">
+                <h3>Taxa de Engajamento (%)</h3>
+                <canvas id="engajamento-stories"></canvas>
+            </div>
+
+            <div class="chart-item full-width">
+                <h3>Stories: Publicados vs Republicados</h3>
+                <canvas id="barras-stories"></canvas>
+            </div>
+
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
