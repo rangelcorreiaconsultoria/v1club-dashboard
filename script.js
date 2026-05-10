@@ -124,19 +124,24 @@ function renderizarSOS(filtroStatus = 'todos', busca = '') {
     });
 }
 
-function criarCard({ nome, diasSemPostar, postsSemana, status }) {
+function criarCard({ nome, diasSemPostar, postsSemana, status, row }) {
     const card = document.createElement('div');
     card.className = `sos-card ${status}`;
 
     const inicial = nome.charAt(0).toUpperCase();
     const csKey   = `cs_${nome}`;
     const csChecked = localStorage.getItem(csKey) === 'true';
+    const fotoUrl = row && row['foto'] ? row['foto'] : '';
 
     const diasLabel = diasSemPostar === 999 ? 'sem dados' : `${diasSemPostar} dias`;
     const diasClass = status === 'critico' ? 'value-danger' : status === 'alerta' ? 'value-warning' : 'value-success';
 
+    const avatarConteudo = fotoUrl
+        ? `<img src="${fotoUrl}" class="avatar-img" alt="${inicial}" onerror="this.outerHTML='${inicial}'">`
+        : inicial;
+
     card.innerHTML = `
-        <div class="card-avatar">${inicial}</div>
+        <div class="card-avatar">${avatarConteudo}</div>
         <div class="card-info">
             <div class="card-name">${nome}</div>
             <div class="card-meta">Último rastreamento atualizado</div>
@@ -262,7 +267,14 @@ function filtrarDados(nome) {
 }
 
 function atualizarPerfil(nome, dados) {
-    document.getElementById('ind-avatar').textContent   = nome.charAt(0).toUpperCase();
+    const inicial  = nome.charAt(0).toUpperCase();
+    const fotoUrl  = dados[dados.length - 1]?.['foto'] || '';
+    const avatarEl = document.getElementById('ind-avatar');
+    if (fotoUrl) {
+        avatarEl.innerHTML = `<img src="${fotoUrl}" class="avatar-img" alt="${inicial}" onerror="this.outerHTML='${inicial}'">`;
+    } else {
+        avatarEl.textContent = inicial;
+    }
     document.getElementById('ind-username').textContent = nome;
 
     const postsUnicos  = [...new Set(dados.map(r => r['📤 Último post']).filter(v => v && v !== ''))].length;
