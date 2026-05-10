@@ -9,83 +9,125 @@
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
 </head>
 <body>
-    <div class="container">
+    <div class="app">
 
-        <header class="header">
-            <div class="profile-section">
-                <div class="avatar">
-                    <div class="avatar-icon">📊</div>
-                </div>
-                <div class="profile-info">
-                    <h1 class="username" id="username">Selecione um nutricionista</h1>
-                    <div class="stats">
-                        <div class="stat">
-                            <span class="stat-value" id="stat-posts">0</span>
-                            <span class="stat-label">Posts</span>
-                        </div>
-                        <div class="stat">
-                            <span class="stat-value" id="stat-reels">0</span>
-                            <span class="stat-label">Reels</span>
-                        </div>
-                        <div class="stat">
-                            <span class="stat-value" id="stat-stories">0</span>
-                            <span class="stat-label">Stories</span>
-                        </div>
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <span class="logo-v1">V1</span>
+                <span class="logo-club">Club</span>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active" data-page="sos">
+                    <span class="nav-icon">🚨</span>
+                    <span class="nav-label">SOS</span>
+                </a>
+                <a href="#" class="nav-item" data-page="individual">
+                    <span class="nav-icon">📊</span>
+                    <span class="nav-label">Individual</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Conteúdo Principal -->
+        <main class="main-content">
+
+            <!-- Página SOS -->
+            <div id="page-sos" class="page active">
+                <div class="page-header">
+                    <div>
+                        <h1 class="page-title">SOS <span class="badge-alert" id="sos-count">0</span></h1>
+                        <p class="page-subtitle">Nutricionistas com poucas publicações na semana</p>
+                    </div>
+                    <div class="header-filters">
+                        <select class="filter-select" id="sos-filtro">
+                            <option value="todos">Todos</option>
+                            <option value="critico">Atenção Máxima (7+ dias)</option>
+                            <option value="alerta">Alerta (3-6 dias)</option>
+                            <option value="saudavel">Saudável (0-2 dias)</option>
+                        </select>
+                        <input type="text" class="filter-search" id="sos-busca" placeholder="Buscar nutricionista...">
                     </div>
                 </div>
+                <div id="sos-loading" class="loading-state">Carregando dados...</div>
+                <div id="sos-grupos"></div>
             </div>
 
-            <div class="filters">
-                <div class="filter-group">
-                    <input type="text" id="nutricionista" placeholder="Buscar nutricionista..." class="input-search" autocomplete="off">
-                    <div id="nutricionista-list" class="nutricionista-list" style="display:none;"></div>
+            <!-- Página Individual -->
+            <div id="page-individual" class="page">
+                <div class="page-header">
+                    <div>
+                        <h1 class="page-title">Análise Individual</h1>
+                        <p class="page-subtitle">Acompanhamento detalhado de atividade no Instagram</p>
+                    </div>
                 </div>
-                <div class="filter-group">
-                    <select id="periodo" class="select-periodo">
+
+                <div class="individual-filters">
+                    <div class="search-wrapper">
+                        <input type="text" id="nutricionista" placeholder="Buscar nutricionista..." class="filter-search" autocomplete="off">
+                        <div id="nutricionista-list" class="dropdown-list" style="display:none;"></div>
+                    </div>
+                    <select id="periodo" class="filter-select">
                         <option value="2">Últimas 2 semanas</option>
                         <option value="4">Últimas 4 semanas</option>
                         <option value="8">Últimas 8 semanas</option>
                         <option value="custom">Personalizado</option>
                     </select>
+                    <div id="custom-dates" style="display:none; gap:8px; align-items:center;">
+                        <input type="date" id="data-inicio" class="filter-select">
+                        <input type="date" id="data-fim" class="filter-select">
+                        <button id="aplicar-custom" class="btn-primary">Aplicar</button>
+                    </div>
                 </div>
-                <div id="custom-dates" class="filter-group custom-dates" style="display:none;">
-                    <input type="date" id="data-inicio">
-                    <input type="date" id="data-fim">
-                    <button id="aplicar-custom" class="btn-apply">Aplicar</button>
+
+                <div id="individual-loading" class="loading-state" style="display:none;">Carregando dados...</div>
+                <div id="individual-error" class="error-state" style="display:none;"></div>
+
+                <div id="individual-content" style="display:none;">
+                    <div class="profile-card">
+                        <div class="profile-avatar" id="ind-avatar">?</div>
+                        <div class="profile-info">
+                            <h2 id="ind-username">—</h2>
+                            <p id="ind-ultimo-post" class="profile-meta">—</p>
+                        </div>
+                        <div class="profile-stats">
+                            <div class="profile-stat">
+                                <span class="stat-value" id="ind-posts">0</span>
+                                <span class="stat-label">Posts</span>
+                            </div>
+                            <div class="profile-stat">
+                                <span class="stat-value" id="ind-reels">0</span>
+                                <span class="stat-label">Reels</span>
+                            </div>
+                            <div class="profile-stat">
+                                <span class="stat-value" id="ind-stories">0</span>
+                                <span class="stat-label">Stories</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="charts-grid">
+                        <div class="chart-card">
+                            <h3 class="chart-title">Atividade por Semana</h3>
+                            <canvas id="chart-atividade"></canvas>
+                        </div>
+                        <div class="chart-card">
+                            <h3 class="chart-title">Distribuição de Conteúdo</h3>
+                            <canvas id="chart-pizza"></canvas>
+                        </div>
+                        <div class="chart-card">
+                            <h3 class="chart-title">Taxa de Engajamento (%)</h3>
+                            <canvas id="chart-engajamento"></canvas>
+                        </div>
+                        <div class="chart-card full-width">
+                            <h3 class="chart-title">Stories: Publicados vs Republicados</h3>
+                            <canvas id="chart-stories"></canvas>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </header>
 
-        <div class="activity-info">
-            <p id="info-dias" class="info-text">Selecione um nutricionista para ver os dados</p>
-        </div>
-
-        <div id="loading" class="loading"><p>Carregando dados...</p></div>
-        <div id="error" class="error" style="display:none;"></div>
-
-        <div class="charts-grid" id="charts-grid" style="display:none;">
-
-            <div class="chart-item">
-                <h3>Atividade por Semana</h3>
-                <canvas id="linha-atividade"></canvas>
-            </div>
-
-            <div class="chart-item">
-                <h3>Distribuição de Conteúdo</h3>
-                <canvas id="pizza-conteudo"></canvas>
-            </div>
-
-            <div class="chart-item">
-                <h3>Taxa de Engajamento (%)</h3>
-                <canvas id="engajamento-stories"></canvas>
-            </div>
-
-            <div class="chart-item full-width">
-                <h3>Stories: Publicados vs Republicados</h3>
-                <canvas id="barras-stories"></canvas>
-            </div>
-
-        </div>
+        </main>
     </div>
     <script src="script.js"></script>
 </body>
