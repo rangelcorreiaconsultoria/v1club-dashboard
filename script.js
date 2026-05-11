@@ -594,12 +594,56 @@ function addExportListener() {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
+// INSTAGRAM MODAL
+// ═══════════════════════════════════════════════════════════════════════════
+function initInstagramModal() {
+    const viewBtn = document.getElementById('view-instagram-btn');
+    const modal = document.getElementById('instagram-modal');
+    const closeBtn = document.getElementById('close-instagram-modal');
+    const iframe = document.getElementById('instagram-iframe');
+
+    if (!viewBtn) return;
+
+    viewBtn.addEventListener('click', () => {
+        const username = document.getElementById('ind-username').textContent;
+        if (username && username !== '—') {
+            // Load Instagram profile URL in iframe
+            iframe.src = `https://www.instagram.com/${username}/embed/`;
+            modal.style.display = 'flex';
+            showToast(`Carregando perfil de ${username}...`, 'info');
+        }
+    });
+
+    closeBtn.addEventListener('click', () => {
+        modal.style.display = 'none';
+        iframe.src = '';
+    });
+
+    // Close modal when clicking outside
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.style.display = 'none';
+            iframe.src = '';
+        }
+    });
+
+    // Close on escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.style.display !== 'none') {
+            modal.style.display = 'none';
+            iframe.src = '';
+        }
+    });
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
 // HAMBURGER MENU & INITIALIZATION
 // ═══════════════════════════════════════════════════════════════════════════
 document.addEventListener('DOMContentLoaded', () => {
     // Initialize theme
     initTheme();
     addExportListener();
+    initInstagramModal();
 
     const hamburger = document.getElementById('hamburger-btn');
     const sidebar = document.getElementById('sidebar');
