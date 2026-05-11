@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
     <!-- Skip to main content link (acessibilidade) -->
@@ -25,6 +27,9 @@
                 <span class="logo-v1">V1</span>
                 <span class="logo-club">Club</span>
             </div>
+            <button class="theme-toggle" id="theme-toggle" aria-label="Alternar tema claro/escuro" title="Alternar tema">
+                <span class="theme-icon">🌙</span>
+            </button>
             <nav class="sidebar-nav">
                 <a href="#" class="nav-item active" data-page="sos">
                     <span class="nav-icon">🚨</span>
@@ -69,6 +74,9 @@
                         <h1 class="page-title">Análise Individual</h1>
                         <p class="page-subtitle">Acompanhamento detalhado de atividade no Instagram</p>
                     </div>
+                    <button id="export-pdf-btn" class="btn-export" title="Exportar relatório em PDF" aria-label="Exportar relatório em PDF">
+                        📥 Exportar PDF
+                    </button>
                 </div>
 
                 <div class="individual-filters">

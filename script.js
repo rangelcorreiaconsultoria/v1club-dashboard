@@ -340,19 +340,36 @@ function atualizarGraficos(dados) {
     graficoStories(datasS, storiesD, repostD);
 }
 
-const CORES = { primary: '#eab308', dark: '#ca8a04', black: '#000000' };
+// Get theme colors from CSS variables
+function getChartColors() {
+    const root = document.documentElement;
+    const colors = {
+        green: getComputedStyle(root).getPropertyValue('--color-green').trim(),
+        red: getComputedStyle(root).getPropertyValue('--color-red').trim(),
+        blue: getComputedStyle(root).getPropertyValue('--color-blue').trim(),
+        text: getComputedStyle(root).getPropertyValue('--text').trim(),
+        textMuted: getComputedStyle(root).getPropertyValue('--text-muted').trim(),
+        bg: getComputedStyle(root).getPropertyValue('--bg').trim(),
+        bgCard: getComputedStyle(root).getPropertyValue('--bg-card').trim()
+    };
+    return colors;
+}
 
-const chartDefaults = {
-    responsive: true,
-    maintainAspectRatio: true,
-    plugins: {
-        legend: { labels: { color: '#888', font: { size: 11 }, boxWidth: 12, padding: 12 } },
-        datalabels: { display: false }
-    }
-};
+function getChartDefaults() {
+    const colors = getChartColors();
+    return {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+            legend: { labels: { color: colors.textMuted, font: { size: 11 }, boxWidth: 12, padding: 12 } },
+            datalabels: { display: false }
+        }
+    };
+}
 
 function graficoAtividade(datas, posts, reels) {
     if (chartAtividade) chartAtividade.destroy();
+    const colors = getChartColors();
     const somas   = datas.map((_, i) => (posts[i] || 0) + (reels[i] || 0));
     const maxEixo = Math.max(...somas, 1) + 1;
 
@@ -361,17 +378,17 @@ function graficoAtividade(datas, posts, reels) {
         data: {
             labels: datas,
             datasets: [
-                { label: 'Posts', data: posts, backgroundColor: CORES.primary, borderRadius: 0, borderSkipped: false,
-                  datalabels: { display: true, color: '#000', font: { weight: 'bold', size: 8 }, anchor: 'center', align: 'center' } },
-                { label: 'Reels', data: reels, backgroundColor: CORES.black, borderRadius: 0, borderSkipped: false,
+                { label: 'Posts', data: posts, backgroundColor: colors.green, borderRadius: 0, borderSkipped: false,
+                  datalabels: { display: true, color: colors.bg, font: { weight: 'bold', size: 8 }, anchor: 'center', align: 'center' } },
+                { label: 'Reels', data: reels, backgroundColor: colors.red, borderRadius: 0, borderSkipped: false,
                   datalabels: { display: true, color: '#fff', font: { weight: 'bold', size: 8 }, anchor: 'center', align: 'center' } }
             ]
         },
         options: {
-            ...chartDefaults,
+            ...getChartDefaults(),
             scales: {
-                x: { stacked: true, ticks: { color: '#666', font: { size: 10 } }, grid: { display: false } },
-                y: { stacked: true, beginAtZero: true, max: maxEixo, ticks: { color: '#666', precision: 0, stepSize: 1 }, grid: { color: 'rgba(255,255,255,0.05)' } }
+                x: { stacked: true, ticks: { color: colors.textMuted, font: { size: 10 } }, grid: { display: false } },
+                y: { stacked: true, beginAtZero: true, max: maxEixo, ticks: { color: colors.textMuted, precision: 0, stepSize: 1 }, grid: { color: `rgba(${colors.textMuted === '#1a1a1a' ? '0,0,0' : '255,255,255'},0.05)` } }
             }
         }
     });
@@ -379,6 +396,7 @@ function graficoAtividade(datas, posts, reels) {
 
 function graficoPizza(totalPosts, totalReels, totalStories) {
     if (chartPizza) chartPizza.destroy();
+    const colors = getChartColors();
     const total = totalPosts + totalReels + totalStories;
 
     chartPizza = new Chart(document.getElementById('chart-pizza'), {
@@ -386,14 +404,14 @@ function graficoPizza(totalPosts, totalReels, totalStories) {
         data: {
             labels: ['Posts', 'Reels', 'Stories'],
             datasets: [{ data: [totalPosts, totalReels, totalStories],
-                backgroundColor: [CORES.primary, CORES.black, CORES.dark],
-                borderColor: '#1a1a1a', borderWidth: 3, hoverOffset: 8 }]
+                backgroundColor: [colors.green, colors.red, colors.blue],
+                borderColor: colors.bgCard, borderWidth: 3, hoverOffset: 8 }]
         },
         options: {
-            ...chartDefaults,
+            ...getChartDefaults(),
             cutout: '62%',
             plugins: {
-                ...chartDefaults.plugins,
+                ...getChartDefaults().plugins,
                 datalabels: {
                     display: ctx => ctx.dataset.data[ctx.dataIndex] > 0,
                     color: '#fff',
@@ -407,10 +425,11 @@ function graficoPizza(totalPosts, totalReels, totalStories) {
 
 function graficoEngajamento(datas, valores) {
     if (chartEngajamento) chartEngajamento.destroy();
+    const colors = getChartColors();
 
     // Calcular KPIs
-    const media = valores.length > 0 
-        ? Math.round(valores.reduce((a, b) => a + b, 0) / valores.length) 
+    const media = valores.length > 0
+        ? Math.round(valores.reduce((a, b) => a + b, 0) / valores.length)
         : 0;
     const melhor = valores.length > 0 ? Math.max(...valores) : 0;
     const pior = valores.length > 0 ? Math.min(...valores) : 0;
@@ -430,29 +449,29 @@ function graficoEngajamento(datas, valores) {
         data: {
             labels: datas,
             datasets: [{ label: '% Republicados', data: valores,
-                borderColor: '#ffd000', backgroundColor: 'rgba(255,208,0,0.08)',
-                pointBackgroundColor: '#ffd000', pointBorderColor: '#0f0f0f',
+                borderColor: colors.blue, backgroundColor: `rgba(96, 165, 250, 0.08)`,
+                pointBackgroundColor: colors.blue, pointBorderColor: colors.bg,
                 pointRadius: 5, pointHoverRadius: 7, pointBorderWidth: 2,
                 tension: 0.4, fill: true, borderWidth: 3,
-                segment: { borderColor: ctx => ctx.p0DataIndex !== undefined && ctx.p1DataIndex !== undefined 
-                    ? 'rgba(255, 208, 0, 0.8)' 
-                    : 'rgba(255, 208, 0, 0.3)' }
+                segment: { borderColor: ctx => ctx.p0DataIndex !== undefined && ctx.p1DataIndex !== undefined
+                    ? `rgba(96, 165, 250, 0.8)`
+                    : `rgba(96, 165, 250, 0.3)` }
             }]
         },
         options: {
-            ...chartDefaults,
+            ...getChartDefaults(),
             interaction: { mode: 'index', intersect: false },
             plugins: {
-                legend: { 
+                legend: {
                     display: true, position: 'top',
-                    labels: { color: '#a0a0a0', boxWidth: 12, padding: 16, font: { size: 12, weight: '600' }, usePointStyle: true, pointStyle: 'circle' }
+                    labels: { color: colors.textMuted, boxWidth: 12, padding: 16, font: { size: 12, weight: '600' }, usePointStyle: true, pointStyle: 'circle' }
                 },
                 tooltip: {
                     enabled: true,
-                    backgroundColor: 'rgba(15, 15, 15, 0.95)',
-                    titleColor: '#ffd000',
-                    bodyColor: '#ffffff',
-                    borderColor: 'rgba(255, 208, 0, 0.3)',
+                    backgroundColor: colors.bgCard,
+                    titleColor: colors.blue,
+                    bodyColor: colors.text,
+                    borderColor: `rgba(96, 165, 250, 0.3)`,
                     borderWidth: 1,
                     padding: 12,
                     displayColors: false,
@@ -462,7 +481,7 @@ function graficoEngajamento(datas, valores) {
                 },
                 datalabels: {
                     display: true,
-                    color: '#ffd000',
+                    color: colors.blue,
                     font: { weight: 'bold', size: 11 },
                     anchor: 'top',
                     align: 'top',
@@ -475,12 +494,12 @@ function graficoEngajamento(datas, valores) {
                 y: {
                     beginAtZero: true,
                     max: 100,
-                    grid: { color: 'rgba(255, 208, 0, 0.08)', drawBorder: false },
-                    ticks: { color: '#606060', font: { size: 11 }, callback: v => v + '%', padding: 12 }
+                    grid: { color: `rgba(96, 165, 250, 0.08)`, drawBorder: false },
+                    ticks: { color: colors.textMuted, font: { size: 11 }, callback: v => v + '%', padding: 12 }
                 },
                 x: {
                     grid: { display: false, drawBorder: false },
-                    ticks: { color: '#606060', font: { size: 10 }, maxRotation: 45, minRotation: 0, padding: 8 }
+                    ticks: { color: colors.textMuted, font: { size: 10 }, maxRotation: 45, minRotation: 0, padding: 8 }
                 }
             }
         }
@@ -489,6 +508,7 @@ function graficoEngajamento(datas, valores) {
 
 function graficoStories(datas, stories, repost) {
     if (chartStories) chartStories.destroy();
+    const colors = getChartColors();
     const somas   = datas.map((_, i) => (stories[i] || 0) + (repost[i] || 0));
     const maxEixo = Math.max(...somas, 1) + Math.ceil(Math.max(...somas, 1) * 0.2);
 
@@ -497,17 +517,17 @@ function graficoStories(datas, stories, repost) {
         data: {
             labels: datas,
             datasets: [
-                { label: 'Publicados', data: stories, backgroundColor: CORES.primary, borderRadius: 0, borderSkipped: false,
-                  datalabels: { display: ctx => ctx.dataset.data[ctx.dataIndex] > 0, color: '#000', font: { weight: 'bold', size: 10 }, anchor: 'center', align: 'center' } },
-                { label: 'Republicados', data: repost, backgroundColor: CORES.black, borderRadius: 0, borderSkipped: false,
+                { label: 'Publicados', data: stories, backgroundColor: colors.green, borderRadius: 0, borderSkipped: false,
+                  datalabels: { display: ctx => ctx.dataset.data[ctx.dataIndex] > 0, color: colors.bg, font: { weight: 'bold', size: 10 }, anchor: 'center', align: 'center' } },
+                { label: 'Republicados', data: repost, backgroundColor: colors.red, borderRadius: 0, borderSkipped: false,
                   datalabels: { display: ctx => ctx.dataset.data[ctx.dataIndex] > 0, color: '#fff', font: { weight: 'bold', size: 10 }, anchor: 'center', align: 'center' } }
             ]
         },
         options: {
-            ...chartDefaults,
+            ...getChartDefaults(),
             scales: {
-                x: { stacked: true, ticks: { color: '#666', font: { size: 10 } }, grid: { display: false } },
-                y: { stacked: true, beginAtZero: true, max: maxEixo, ticks: { color: '#666', precision: 0, stepSize: Math.max(1, Math.ceil(maxEixo / 5)) }, grid: { color: 'rgba(255,255,255,0.05)' } }
+                x: { stacked: true, ticks: { color: colors.textMuted, font: { size: 10 } }, grid: { display: false } },
+                y: { stacked: true, beginAtZero: true, max: maxEixo, ticks: { color: colors.textMuted, precision: 0, stepSize: Math.max(1, Math.ceil(maxEixo / 5)) }, grid: { color: `rgba(${colors.textMuted === '#1a1a1a' ? '0,0,0' : '255,255,255'},0.05)` } }
             }
         }
     });
@@ -517,20 +537,180 @@ function graficoStories(datas, stories, repost) {
 // HAMBURGER MENU - Mobile Sidebar Toggle
 // ═══════════════════════════════════════════════════════════════════════════
 
+// ═══════════════════════════════════════════════════════════════════════════
+// THEME SWITCHING
+// ═══════════════════════════════════════════════════════════════════════════
+function initTheme() {
+    const themeToggle = document.getElementById('theme-toggle');
+    const savedTheme = localStorage.getItem('theme') || 'light';
+
+    // Set initial theme
+    if (savedTheme === 'dark') {
+        document.body.classList.add('dark-mode');
+        updateThemeIcon(true);
+    }
+
+    themeToggle?.addEventListener('click', toggleTheme);
+}
+
+function toggleTheme() {
+    const isDarkMode = document.body.classList.toggle('dark-mode');
+    localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+    updateThemeIcon(isDarkMode);
+    showToast(`Tema alterado para ${isDarkMode ? 'escuro' : 'claro'}`, 'info');
+
+    // Redraw charts with new colors
+    const nutricionista = document.getElementById('nutricionista').value;
+    if (nutricionista && dadosPlanilha.data) {
+        setTimeout(() => atualizarIndividual(), 300);
+    }
+}
+
+function updateThemeIcon(isDarkMode) {
+    const icon = document.querySelector('.theme-icon');
+    if (icon) icon.textContent = isDarkMode ? '☀️' : '🌙';
+}
+
+let chartsNeedRedraw = false;
+
+// ═══════════════════════════════════════════════════════════════════════════
+// TOAST NOTIFICATION SYSTEM
+// ═══════════════════════════════════════════════════════════════════════════
+function showToast(message, type = 'info', duration = 3000) {
+    const container = document.getElementById('toast-container') || createToastContainer();
+
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    toast.setAttribute('role', 'alert');
+    toast.setAttribute('aria-live', 'polite');
+
+    const icons = { success: '✅', error: '❌', warning: '⚠️', info: 'ℹ️' };
+    toast.innerHTML = `
+        <span class="toast-icon">${icons[type] || icons.info}</span>
+        <span class="toast-message">${message}</span>
+        <button class="toast-close" aria-label="Fechar notificação">×</button>
+    `;
+
+    container.appendChild(toast);
+
+    // Auto remove after duration
+    const timeout = setTimeout(() => removeToast(toast), duration);
+
+    // Manual close
+    toast.querySelector('.toast-close').addEventListener('click', () => {
+        clearTimeout(timeout);
+        removeToast(toast);
+    });
+
+    return toast;
+}
+
+function createToastContainer() {
+    const container = document.createElement('div');
+    container.id = 'toast-container';
+    container.setAttribute('role', 'region');
+    container.setAttribute('aria-label', 'Notificações');
+    document.body.appendChild(container);
+    return container;
+}
+
+function removeToast(toast) {
+    toast.style.animation = 'slideOut 0.3s ease-out forwards';
+    setTimeout(() => toast.remove(), 300);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// PDF EXPORT FUNCTION
+// ═══════════════════════════════════════════════════════════════════════════
+async function exportToPDF() {
+    const nutricionista = document.getElementById('nutricionista').value;
+    if (!nutricionista) {
+        showToast('Selecione uma nutricionista para exportar', 'warning');
+        return;
+    }
+
+    const element = document.getElementById('individual-content');
+    if (!element || element.style.display === 'none') {
+        showToast('Nenhum dado disponível para exportar', 'error');
+        return;
+    }
+
+    showToast('Preparando PDF para exportar...', 'info');
+
+    try {
+        // Check if libraries are loaded
+        if (typeof html2canvas === 'undefined' || typeof jspdf === 'undefined') {
+            showToast('Bibliotecas não carregadas. Tente novamente.', 'error');
+            return;
+        }
+
+        // Create canvas from the element
+        const canvas = await html2canvas(element, {
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--bg').trim(),
+            scale: 2
+        });
+
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jspdf.jsPDF({
+            orientation: 'portrait',
+            unit: 'mm',
+            format: 'a4'
+        });
+
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = pdf.internal.pageSize.getHeight();
+        const imgHeight = (canvas.height * pdfWidth) / canvas.width;
+        let heightLeft = imgHeight;
+        let position = 0;
+
+        // Add image to PDF with pagination
+        pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeight);
+        heightLeft -= pdfHeight;
+
+        while (heightLeft > 0) {
+            position = heightLeft - imgHeight;
+            pdf.addPage();
+            pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeight);
+            heightLeft -= pdfHeight;
+        }
+
+        pdf.save(`${nutricionista}-relatorio-${new Date().toISOString().split('T')[0]}.pdf`);
+        showToast('PDF exportado com sucesso!', 'success');
+    } catch (error) {
+        console.error('Erro ao exportar PDF:', error);
+        showToast('Erro ao exportar PDF. Tente novamente.', 'error');
+    }
+}
+
+// Add export button listener if it exists
+function addExportListener() {
+    const exportBtn = document.getElementById('export-pdf-btn');
+    if (exportBtn) {
+        exportBtn.addEventListener('click', exportToPDF);
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// HAMBURGER MENU & INITIALIZATION
+// ═══════════════════════════════════════════════════════════════════════════
 document.addEventListener('DOMContentLoaded', () => {
+    // Initialize theme
+    initTheme();
+    addExportListener();
+
     const hamburger = document.getElementById('hamburger-btn');
     const sidebar = document.getElementById('sidebar');
     const navItems = document.querySelectorAll('.nav-item');
-    
+
     if (!hamburger) return;
-    
+
     // Toggle hamburger
     hamburger.addEventListener('click', () => {
         hamburger.classList.toggle('active');
         sidebar.classList.toggle('open');
         document.body.classList.toggle('sidebar-open');
     });
-    
+
     // Fechar sidebar ao clicar em nav item
     navItems.forEach(item => {
         item.addEventListener('click', () => {
@@ -539,11 +719,11 @@ document.addEventListener('DOMContentLoaded', () => {
             document.body.classList.remove('sidebar-open');
         });
     });
-    
+
     // Fechar sidebar ao clicar fora (mobile)
     document.addEventListener('click', (e) => {
         if (window.innerWidth > 768) return;
-        
+
         if (!sidebar.contains(e.target) && !hamburger.contains(e.target)) {
             hamburger.classList.remove('active');
             sidebar.classList.remove('open');
