@@ -12,12 +12,7 @@
     <div class="app">
 
         <!-- Sidebar -->
-        <aside class="sidebar" id="sidebar">
-            <button class="hamburger" id="hamburger-btn" aria-label="Menu">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
+        <aside class="sidebar">
             <div class="sidebar-logo">
                 <span class="logo-v1">V1</span>
                 <span class="logo-club">Club</span>
@@ -177,7 +172,6 @@
 
         </main>
     </div>
-    <div class="overlay"></div>
     <script src="script.js"></script>
 </body>
 </html>
