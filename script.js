@@ -3,7 +3,7 @@ Chart.register(ChartDataLabels);
 const API_URL = 'https://script.google.com/macros/s/AKfycbwW56AajbBpeTAHLw_e6GPf_36j-NlYg_NU6gUB8e-5zZzNE5ExhrGmcTCOr2mGrrqc2A/exec';
 
 let dadosPlanilha = {};
-let chartAtividade, chartPizza, chartEngajamento, chartStories;
+let chartAtividade, chartPizza, chartStories;
 
 function urlFoto(url) {
     if (!url) return '';
@@ -317,26 +317,12 @@ function atualizarGraficos(dados) {
     const totalReels   = [...new Set(dados.map(r => r['🎞️ Último Reel']).filter(v => v && v !== ''))].length;
     const totalStories = dados.reduce((s, r) => s + (parseInt(r['🗂️ Stories Publicados']) || 0), 0);
 
-    const datasEng = [], valEng = [];
-    dados.forEach(r => {
-        const pub = parseInt(r['🗂️ Stories Publicados']) || 0;
-        const rep = parseInt(r['🔁 Storys Repost']) || 0;
-        if (pub > 0) {
-            const engajamento = Math.round((rep / pub) * 100);
-            if (engajamento > 0) {
-                datasEng.push(formataData(r));
-                valEng.push(engajamento);
-            }
-        }
-    });
-
     const datasS  = dados.map(formataData);
     const storiesD = dados.map(r => parseInt(r['🗂️ Stories Publicados']) || 0);
     const repostD  = dados.map(r => parseInt(r['🔁 Storys Repost']) || 0);
 
     graficoAtividade(datas, posts, reels);
     graficoPizza(totalPosts, totalReels, totalStories);
-    graficoEngajamento(datasEng, valEng);
     graficoStories(datasS, storiesD, repostD);
 }
 
@@ -417,89 +403,6 @@ function graficoPizza(totalPosts, totalReels, totalStories) {
                     color: '#fff',
                     font: { weight: 'bold', size: 12 },
                     formatter: v => total > 0 ? ((v / total) * 100).toFixed(0) + '%' : ''
-                }
-            }
-        }
-    });
-}
-
-function graficoEngajamento(datas, valores) {
-    if (chartEngajamento) chartEngajamento.destroy();
-    const colors = getChartColors();
-
-    // Calcular KPIs
-    const media = valores.length > 0
-        ? Math.round(valores.reduce((a, b) => a + b, 0) / valores.length)
-        : 0;
-    const melhor = valores.length > 0 ? Math.max(...valores) : 0;
-    const pior = valores.length > 0 ? Math.min(...valores) : 0;
-    const melhorIdx = valores.indexOf(melhor);
-    const piorIdx = valores.indexOf(pior);
-
-    // Atualizar stats
-    document.getElementById('eng-media').textContent = media + '%';
-    document.getElementById('eng-melhor').textContent = melhor + '%';
-    document.getElementById('eng-melhor-data').textContent = melhorIdx >= 0 ? datas[melhorIdx] : '-';
-    document.getElementById('eng-pior').textContent = pior + '%';
-    document.getElementById('eng-pior-data').textContent = piorIdx >= 0 ? datas[piorIdx] : '-';
-    document.getElementById('eng-dias').textContent = valores.length;
-
-    chartEngajamento = new Chart(document.getElementById('chart-engajamento'), {
-        type: 'line',
-        data: {
-            labels: datas,
-            datasets: [{ label: '% Republicados', data: valores,
-                borderColor: colors.blue, backgroundColor: `rgba(96, 165, 250, 0.08)`,
-                pointBackgroundColor: colors.blue, pointBorderColor: colors.bg,
-                pointRadius: 5, pointHoverRadius: 7, pointBorderWidth: 2,
-                tension: 0.4, fill: true, borderWidth: 3,
-                segment: { borderColor: ctx => ctx.p0DataIndex !== undefined && ctx.p1DataIndex !== undefined
-                    ? `rgba(96, 165, 250, 0.8)`
-                    : `rgba(96, 165, 250, 0.3)` }
-            }]
-        },
-        options: {
-            ...getChartDefaults(),
-            interaction: { mode: 'index', intersect: false },
-            plugins: {
-                legend: {
-                    display: true, position: 'top',
-                    labels: { color: colors.textMuted, boxWidth: 12, padding: 16, font: { size: 12, weight: '600' }, usePointStyle: true, pointStyle: 'circle' }
-                },
-                tooltip: {
-                    enabled: true,
-                    backgroundColor: colors.bgCard,
-                    titleColor: colors.blue,
-                    bodyColor: colors.text,
-                    borderColor: `rgba(96, 165, 250, 0.3)`,
-                    borderWidth: 1,
-                    padding: 12,
-                    displayColors: false,
-                    titleFont: { size: 13, weight: 'bold' },
-                    bodyFont: { size: 12 },
-                    callbacks: { label: function(context) { return context.parsed.y + '%'; } }
-                },
-                datalabels: {
-                    display: true,
-                    color: colors.blue,
-                    font: { weight: 'bold', size: 11 },
-                    anchor: 'top',
-                    align: 'top',
-                    offset: 12,
-                    formatter: v => v > 0 ? v + '%' : '',
-                    clamp: true
-                }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    max: 100,
-                    grid: { color: `rgba(96, 165, 250, 0.08)`, drawBorder: false },
-                    ticks: { color: colors.textMuted, font: { size: 11 }, callback: v => v + '%', padding: 12 }
-                },
-                x: {
-                    grid: { display: false, drawBorder: false },
-                    ticks: { color: colors.textMuted, font: { size: 10 }, maxRotation: 45, minRotation: 0, padding: 8 }
                 }
             }
         }
