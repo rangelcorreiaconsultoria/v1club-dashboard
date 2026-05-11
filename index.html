@@ -9,10 +9,13 @@
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
 </head>
 <body>
+    <!-- Skip to main content link (acessibilidade) -->
+    <a href="#main-content" class="skip-to-main">Pular para o conteúdo principal</a>
+
     <div class="app">
 
         <!-- Sidebar -->
-        <aside class="sidebar" id="sidebar">
+        <aside class="sidebar" id="sidebar" role="navigation" aria-label="Menu de navegação">
             <button class="hamburger" id="hamburger-btn" aria-label="Menu">
                 <span></span>
                 <span></span>
@@ -35,7 +38,7 @@
         </aside>
 
         <!-- Conteúdo Principal -->
-        <main class="main-content">
+        <main class="main-content" id="main-content" role="main">
 
             <!-- Página SOS -->
             <div id="page-sos" class="page active">
@@ -45,13 +48,14 @@
                         <p class="page-subtitle">Nutricionistas com poucas publicações na semana</p>
                     </div>
                     <div class="header-filters">
-                        <select class="filter-select" id="sos-filtro">
+                        <label for="sos-filtro" class="sr-only">Filtrar por status</label>
+                        <select class="filter-select" id="sos-filtro" aria-label="Filtrar nutricionistas por status">
                             <option value="todos">Todos</option>
                             <option value="critico">Atenção Máxima (7+ dias)</option>
                             <option value="alerta">Alerta (3-6 dias)</option>
                             <option value="saudavel">Saudável (0-2 dias)</option>
                         </select>
-                        <input type="text" class="filter-search" id="sos-busca" placeholder="Buscar nutricionista...">
+                        <input type="text" class="filter-search" id="sos-busca" placeholder="Buscar nutricionista..." aria-label="Buscar nutricionista">
                     </div>
                 </div>
                 <div id="sos-loading" class="loading-state">Carregando dados...</div>
@@ -69,10 +73,12 @@
 
                 <div class="individual-filters">
                     <div class="search-wrapper">
-                        <input type="text" id="nutricionista" placeholder="Buscar nutricionista..." class="filter-search" autocomplete="off">
-                        <div id="nutricionista-list" class="dropdown-list" style="display:none;"></div>
+                        <label for="nutricionista" class="sr-only">Selecionar nutricionista</label>
+                        <input type="text" id="nutricionista" placeholder="Buscar nutricionista..." class="filter-search" autocomplete="off" aria-label="Buscar e selecionar nutricionista" aria-autocomplete="list" aria-controls="nutricionista-list">
+                        <div id="nutricionista-list" class="dropdown-list" style="display:none;" role="listbox" aria-label="Lista de nutricionistas"></div>
                     </div>
-                    <select id="periodo" class="filter-select">
+                    <label for="periodo" class="sr-only">Selecionar período</label>
+                    <select id="periodo" class="filter-select" aria-label="Selecionar período de análise">
                         <option value="2">Últimas 2 semanas</option>
                         <option value="4">Últimas 4 semanas</option>
                         <option value="8">Últimas 8 semanas</option>
