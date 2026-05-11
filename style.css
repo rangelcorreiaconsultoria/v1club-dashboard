@@ -397,8 +397,8 @@ body {
     color: var(--primary);
 }
 
-.profile-info { flex: 1; }
-.profile-info h2 { font-size: 22px; font-weight: 600; }
+.profile-info { flex: 1; min-width: 200px; }
+.profile-info h2 { font-size: 24px; font-weight: 600; }
 .profile-meta { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
 
 .profile-stats {
@@ -411,7 +411,7 @@ body {
 .profile-stat { text-align: center; }
 
 .stat-value {
-    font-size: 22px;
+    font-size: 24px;
     font-weight: 700;
     color: var(--primary);
     display: block;
@@ -658,11 +658,69 @@ body {
     .main-content { padding: 20px 16px; }
 
     .page-header { flex-direction: column; }
+    .page-title { font-size: 20px; }
     .charts-grid { grid-template-columns: 1fr; }
+    .chart-card { padding: 16px; }
+    .chart-title { font-size: 12px; }
 
-    .profile-stats { border-left: none; padding-left: 0; border-top: 1px solid var(--border); padding-top: 16px; width: 100%; justify-content: space-around; }
+    /* Profile Card Mobile - Stack vertical */
+    .profile-card {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 20px;
+    }
 
-    .card-metrics { display: none; }
+    .profile-avatar {
+        width: 64px;
+        height: 64px;
+        font-size: 24px;
+    }
+
+    .profile-info h2 {
+        font-size: 18px;
+    }
+
+    .profile-info {
+        width: 100%;
+    }
+
+    .profile-stats {
+        border-left: none;
+        padding-left: 0;
+        border-top: 1px solid var(--border);
+        padding-top: 16px;
+        width: 100%;
+        justify-content: space-around;
+        margin-top: 12px;
+    }
+
+    /* SOS Cards - Mostrar metrics em mobile */
+    .card-metrics {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        width: 100%;
+    }
+
+    .card-metric {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 12px;
+    }
+
+    /* Filter responsivo */
+    .individual-filters {
+        flex-direction: column;
+    }
+
+    .filter-search, .filter-select {
+        width: 100%;
+    }
+
+    .search-wrapper {
+        width: 100%;
+    }
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════ */
@@ -903,5 +961,161 @@ body {
     body.sidebar-open .overlay {
         opacity: 1;
         visibility: visible;
+    }
+}
+
+/* Breakpoint: Ultra-Wide (1440px+) */
+@media (min-width: 1440px) {
+    .main-content {
+        padding: 40px 60px;
+    }
+
+    .page-title {
+        font-size: 32px;
+    }
+
+    .charts-grid {
+        gap: 24px;
+    }
+
+    .chart-card {
+        padding: 28px;
+    }
+
+    .profile-card {
+        padding: 36px 48px;
+    }
+
+    .profile-info h2 {
+        font-size: 28px;
+    }
+}
+
+/* Breakpoint: Small Phones (480px) */
+@media (max-width: 480px) {
+    .main-content {
+        padding: 12px;
+    }
+
+    .page-title {
+        font-size: 16px;
+    }
+
+    .page-header {
+        margin-bottom: 16px;
+    }
+
+    .profile-card {
+        padding: 16px;
+        margin-bottom: 16px;
+    }
+
+    .profile-avatar {
+        width: 56px;
+        height: 56px;
+        font-size: 20px;
+    }
+
+    .profile-info h2 {
+        font-size: 16px;
+    }
+
+    .profile-meta {
+        font-size: 12px;
+    }
+
+    .profile-stats {
+        padding-top: 12px;
+        gap: 16px;
+    }
+
+    .stat-value {
+        font-size: 20px;
+    }
+
+    .stat-label {
+        font-size: 11px;
+    }
+
+    .filter-select, .filter-search {
+        font-size: 12px;
+        padding: 8px 10px;
+    }
+
+    .header-filters, .individual-filters {
+        gap: 8px;
+    }
+
+    .sos-card {
+        padding: 16px;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    .card-avatar {
+        width: 44px;
+        height: 44px;
+        font-size: 16px;
+    }
+
+    .card-name {
+        font-size: 14px;
+    }
+
+    .card-meta {
+        font-size: 11px;
+    }
+
+    .chart-card {
+        padding: 12px;
+        min-height: 250px;
+    }
+
+    .chart-title {
+        font-size: 11px;
+        margin-bottom: 12px;
+    }
+
+    .chart-card.full-width {
+        min-height: 280px;
+    }
+
+    .engagement-section {
+        padding: 16px;
+    }
+
+    .engagement-title {
+        font-size: 16px;
+    }
+
+    .engagement-subtitle {
+        font-size: 11px;
+    }
+
+    .engagement-stats {
+        gap: 8px;
+    }
+
+    .stat-card {
+        padding: 10px;
+        gap: 8px;
+    }
+
+    .stat-icon {
+        font-size: 18px;
+        min-width: 24px;
+    }
+
+    .stat-value {
+        font-size: 16px;
+    }
+
+    .stat-secondary {
+        font-size: 11px;
+    }
+
+    .btn-primary {
+        padding: 8px 12px;
+        font-size: 12px;
     }
 }
