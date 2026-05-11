@@ -171,14 +171,21 @@ body {
 }
 
 .filter-select option {
-    background: #0d0d0d;
-    color: #ffffff;
-    padding: 10px;
+    background: #0d0d0d !important;
+    color: #ffffff !important;
+    padding: 10px !important;
 }
 
 .filter-select option:checked {
-    background: linear-gradient(#eab308, #eab308);
-    color: #000;
+    background: #eab308 !important;
+    background-color: #eab308 !important;
+    color: #000000 !important;
+    font-weight: 600 !important;
+}
+
+.filter-select option:hover {
+    background: rgba(234, 179, 8, 0.2) !important;
+    color: #ffffff !important;
 }
 
 .filter-select:hover {
