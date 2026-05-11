@@ -348,8 +348,8 @@ body {
     position: absolute;
     top: calc(100% + 4px);
     left: 0;
-    background: #222;
-    border: 1px solid var(--border);
+    background: var(--bg-card);
+    border: 1px solid rgba(234, 179, 8, 0.2);
     border-radius: 8px;
     max-height: 280px;
     overflow-y: auto;
@@ -358,16 +358,49 @@ body {
     box-shadow: 0 8px 24px rgba(0,0,0,0.4);
 }
 
-.dropdown-item {
-    padding: 10px 14px;
-    font-size: 13px;
-    cursor: pointer;
-    border-bottom: 1px solid var(--border);
-    transition: background 0.15s;
+/* Scrollbar styling para dropdown */
+.dropdown-list::-webkit-scrollbar {
+    width: 6px;
 }
 
-.dropdown-item:hover { background: var(--bg-card-hover); color: var(--primary); }
-.dropdown-item:last-child { border-bottom: none; }
+.dropdown-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.dropdown-list::-webkit-scrollbar-thumb {
+    background: rgba(234, 179, 8, 0.3);
+    border-radius: 3px;
+}
+
+.dropdown-list::-webkit-scrollbar-thumb:hover {
+    background: rgba(234, 179, 8, 0.5);
+}
+
+.dropdown-item {
+    padding: 12px 14px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    cursor: pointer;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    transition: var(--transition);
+    background: var(--bg-card);
+}
+
+.dropdown-item:hover {
+    background: var(--bg-card-hover);
+    color: var(--primary);
+    padding-left: 16px;
+    border-left: 2px solid var(--primary);
+}
+
+.dropdown-item:active {
+    background: rgba(234, 179, 8, 0.1);
+}
+
+.dropdown-item:last-child {
+    border-bottom: none;
+}
 
 /* Profile Card */
 .profile-card {
