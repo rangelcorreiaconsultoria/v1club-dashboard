@@ -74,12 +74,12 @@ function renderizarSOS(filtroStatus = 'todos', busca = '') {
             ? Math.floor((hoje - ultimoConteudo) / (1000 * 60 * 60 * 24))
             : 999;
 
-        // Posts na última semana
+        // Posts e Reels na última semana
         const seteDiasAtras = new Date();
         seteDiasAtras.setDate(hoje.getDate() - 7);
         const postsSemana = dadosPlanilha.data.filter(r =>
             r['membros'] === nome &&
-            r['📤 Último post'] === r['📅 Data'] &&
+            (r['📤 Último post'] === r['📅 Data'] || r['🎞️ Último Reel'] === r['📅 Data']) &&
             new Date(r['📅 Data']) >= seteDiasAtras
         ).length;
 
