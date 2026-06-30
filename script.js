@@ -68,8 +68,10 @@ function renderizarSOS(filtroStatus = 'todos', busca = '') {
     // Monta lista com métricas
     let lista = Object.entries(porNutricionista).map(([nome, row]) => {
         const ultimoPost = row['📤 Último post'] ? new Date(row['📤 Último post']) : null;
-        const diasSemPostar = ultimoPost
-            ? Math.floor((hoje - ultimoPost) / (1000 * 60 * 60 * 24))
+        const ultimoReel = row['🎞️ Último Reel'] ? new Date(row['🎞️ Último Reel']) : null;
+        const ultimoConteudo = [ultimoPost, ultimoReel].filter(d => d).sort((a, b) => b - a)[0];
+        const diasSemPostar = ultimoConteudo
+            ? Math.floor((hoje - ultimoConteudo) / (1000 * 60 * 60 * 24))
             : 999;
 
         // Posts na última semana
